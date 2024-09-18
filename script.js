@@ -34,7 +34,7 @@ async function fetchProductSuggestions(searchTerm) {
   }
 }
 
-// Use debounce for input event listener
+// Limit the frequency of function calls
 const debounce = (func, delay) => {
   let timeoutId;
   return (...args) => {
@@ -102,8 +102,10 @@ function refreshCart() {
 // Event listener for the form submission
 productForm.addEventListener('submit', (event) => {
   event.preventDefault();
+
   const productName = document.getElementById('product-name').value;
   const quantity = parseInt(document.getElementById('quantity').value);
+  
   if (productName && quantity > 0) {
     addToCart(productName, quantity);
   }
