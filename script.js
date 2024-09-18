@@ -8,27 +8,44 @@ const cartItemTemplate = document.getElementById('cart-item-template');
 // Load cart data from local storage
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Function to fetch product suggestions from the API
+// Optimize fetchProductSuggestions function
 async function fetchProductSuggestions(searchTerm) {
-    if (searchTerm.length >= 3) {
-      const response = await fetch(`https://api.escuelajs.co/api/v1/products/?title=${searchTerm}`);
-      const data = await response.json();
-      productSuggestions.innerHTML = ''; // Clear previous suggestions
-      for (const product of data) {
+  productSuggestions.innerHTML = ''; // Use innerHTML for better performance
+  if (searchTerm.length < 3) return;
+
+  try {
+    const response = await fetch(`https://api.escuelajs.co/api/v1/products?title=${encodeURIComponent(searchTerm)}`);
+    const data = await response.json();
+
+    if (data.length > 0) {
+      const fragment = document.createDocumentFragment();
+      data.forEach(product => {
         const option = document.createElement('option');
-        option.value = product.title; // Use title for display
-        productSuggestions.appendChild(option);
-      }
+        option.value = product.title;
+        fragment.appendChild(option);
+      });
+      productSuggestions.appendChild(fragment);
     } else {
-      productSuggestions.innerHTML = ''; // Clear suggestions if less than 3 chars
+      productSuggestions.innerHTML = 'Nu sunt produse cu această denumire.';
     }
+  } catch (error) {
+    console.error('Error fetching product suggestions:', error);
+    productSuggestions.innerHTML = 'A apărut o eroare la încărcarea sugestiilor.';
   }
+}
 
-// Event listener for product name input changes
-productNameInput.addEventListener('input', (event) => {
-    fetchProductSuggestions(event.target.value);
-  });
+// Use debounce for input event listener
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
 
+productNameInput.addEventListener('input', debounce(event => {
+  fetchProductSuggestions(event.target.value);
+}, 300));
 
 // Function to add a product to the cart
 function addToCart(productName, quantity) {
@@ -56,26 +73,30 @@ function deleteProduct(index) {
   refreshCart();
 }
 
-// Function to refresh the cart section
+// Optimize refreshCart function
 function refreshCart() {
-  cartSection.innerHTML = '';
-  for (let i = 0; i < cart.length; i++) {
+  const fragment = document.createDocumentFragment();
+  cart.forEach((item, index) => {
     const cartItem = cartItemTemplate.content.cloneNode(true);
-    cartItem.querySelector('.product-image').src = cart[i].image;
-    cartItem.querySelector('.product-name').textContent = cart[i].name;
-    cartItem.querySelector('.product-description').textContent = cart[i].description;
-    cartItem.querySelector('.quantity').textContent = cart[i].quantity;
+    cartItem.querySelector('.product-name').textContent = item.name;
+    cartItem.querySelector('.quantity').textContent = item.quantity;
+    
     cartItem.querySelector('.modify-quantity').addEventListener('click', () => {
-      const newQuantity = prompt('Introdu noua cantitate:', cart[i].quantity);
+      const newQuantity = prompt('Introdu noua cantitate:', item.quantity);
       if (newQuantity !== null && newQuantity > 0) {
-        modifyQuantity(i, parseInt(newQuantity));
+        modifyQuantity(index, parseInt(newQuantity, 10));
       }
     });
+    
     cartItem.querySelector('.delete-product').addEventListener('click', () => {
-      deleteProduct(i);
+      deleteProduct(index);
     });
-    cartSection.appendChild(cartItem);
-  }
+    
+    fragment.appendChild(cartItem);
+  });
+  
+  cartSection.innerHTML = '';
+  cartSection.appendChild(fragment);
 }
 
 // Event listener for the form submission

@@ -11,16 +11,16 @@
 <body>
     <div class="container text-center">
         <div class="row">
-            <div class="position-absolute top-50 start-50 translate-middle col-lg-4 col-md-6 col-sm-8">
+            <div class="position-absolute top-50 start-50 translate-middle col-md-6">
                 <h1 class="mb-4">Coș de cumpăraturi</h1>
+                <p>Pentru adăugarea unui produs se pot folosi sugestiile de căutare. Articolele afișate sunt de la <a href="https://fakeapi.platzi.com/">Platzi Fake Store API</a>.<br>Modificarea cantității se poate face și prin adăugarea aceluiași produs.</p>
 
                 <form id="product-form" class="mb-4">
                     <div class="mb-3 row">
                         <label for="product-name" class="col-sm-3 col-form-label text-end">Produs:</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="product-name" required>
-                            <datalist id="product-suggestions">
-                            </datalist>
+                            <input type="text" class="form-control" id="product-name" required list="product-suggestions">
+                            <datalist id="product-suggestions"></datalist>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -42,9 +42,7 @@
                         <div class="cart-item card mb-3">
                             <div class="card-body d-flex justify-content-between align-items-center">
                                 <div>
-                                    <img class="product-image" src="" alt="">
                                     <h5 class="card-title mb-0">Produs: <span class="product-name"></span></h5>
-                                    <p>Descriere: <span class="product-description"></span></p>
                                     <p class="card-text mb-0">Cantitate: <span class="quantity"></span></p>
                                 </div>
                                 <div>
