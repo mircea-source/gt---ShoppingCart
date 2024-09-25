@@ -1,9 +1,9 @@
 // Get DOM elements
-const productForm = document.getElementById('product-form');
-const productNameInput = document.getElementById('product-name');
-const productSuggestions = document.getElementById('product-suggestions');
-const cartSection = document.getElementById('cart-section');
-const cartItemTemplate = document.getElementById('cart-item-template');
+const productForm = document.querySelector('#product-form');
+const productNameInput = document.querySelector('#product-name');
+const productSuggestions = document.querySelector('#product-suggestions');
+const cartSection = document.querySelector('#cart-section');
+const cartItemTemplate = document.querySelector('#cart-item-template');
 
 // Load cart data from local storage
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -103,8 +103,8 @@ function refreshCart() {
 productForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const productName = document.getElementById('product-name').value;
-  const quantity = parseInt(document.getElementById('quantity').value);
+  const productName = document.querySelector('#product-name').value;
+  const quantity = parseInt(document.querySelector('#quantity').value);
   
   if (productName && quantity > 0) {
     addToCart(productName, quantity);
