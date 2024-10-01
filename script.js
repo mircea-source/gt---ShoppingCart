@@ -10,7 +10,7 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // Optimize fetchProductSuggestions function
 async function fetchProductSuggestions(searchTerm) {
-  productSuggestions.innerHTML = ''; // Use innerHTML for better performance
+  productSuggestions.innerHTML = ''; 
   if (searchTerm.length < 3) return;
 
   try {
